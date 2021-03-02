@@ -1,6 +1,7 @@
 const mysql = require('mysql');
 const inquirer = require('inquirer');
 const consoleTable = require("console.table");
+const chalk = require('chalk');
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -14,11 +15,13 @@ connection.connect((err) => {
   if (err) throw err;
   // run the start function after the connection is made to prompt the user
   firstQuestion();
+
 });
 
 // Function to prompt the user on what they would like to do
 
 const firstQuestion = () => {
+  
   inquirer
     .prompt({
       name: 'AddViewUpdate',
@@ -179,10 +182,9 @@ const firstQuestion = () => {
       });
   }
 
-  const viewEmployees = (consoleTable) => {
-    consoleTable = consoleTable.replace('"', " ") // First param is what we would like to replace and second param is what we would like to set it to.
-    console.log(consoleTable)
-    connection.query(`SELECT * FROM ${consoleTable}`, // this will be whatever information is passed when when the function is called.
+  const viewEmployees = (x) => {
+    console.log(x)
+    connection.query(`SELECT * FROM ${x}`, 
       (err, res) => {
         if (err) throw err;
         console.table(res);
@@ -191,45 +193,10 @@ const firstQuestion = () => {
     )
   }
 
+  const updateRole = () => {
+    connection.query('UPDATE employee_role SET ? WHERE ?') 
 
-
-
-
-
-
-
-
-
-  // const updateRole = () => {
-  //   inquirer
-  //     .prompt([
-  //       {
-  //         name: "RoleUpdate",
-  //         type: "input",
-  //         message: "Which role would you like to update?",
-  //         choices: []
-  //       }
-  //     ])
-  //     .then((answer) => {
-  //       connection.query(
-  //         'UPDATE employee SET ? WHERE ?',
-
-  //         {
-  //           role: answer.RoleUpdate
-  //         },
-
-  //         {
-  //           id: answer.
-  //         }
-  //         (err) => {
-  //           if (err) throw err;
-  //           console.log("You have successfully added an department")
-  //           // ask initial question again.
-  //           firstQuestion();
-  //         }
-  //       );
-  //     });
-  // }
+  }
 
 
 }
