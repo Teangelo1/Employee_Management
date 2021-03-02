@@ -2,6 +2,7 @@ const mysql = require('mysql');
 const inquirer = require('inquirer');
 const consoleTable = require("console.table");
 const chalk = require('chalk');
+var figlet = require('figlet');
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -11,7 +12,17 @@ const connection = mysql.createConnection({
   database: 'employee_db',
 });
 
+figlet('Employee Management System', function(err, data) {
+  if (err) {
+      console.log('Something went wrong...');
+      console.dir(err);
+      return;
+  }
+  console.log(data)
+});
+
 connection.connect((err) => {
+
   if (err) throw err;
   // run the start function after the connection is made to prompt the user
   firstQuestion();
@@ -21,6 +32,7 @@ connection.connect((err) => {
 // Function to prompt the user on what they would like to do
 
 const firstQuestion = () => {
+
   
   inquirer
     .prompt({
