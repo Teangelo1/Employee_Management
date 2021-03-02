@@ -70,6 +70,9 @@ const firstQuestion = () => {
         case "View all Roles":
           viewEmployees("employee_role");
           break;
+          
+          case "Done":
+            connection.end();
 
         default:
           break;
