@@ -12,11 +12,11 @@ const connection = mysql.createConnection({
   database: 'employee_db',
 });
 
-figlet('Employee Management System', function(err, data) {
+figlet('Employee Management System', function (err, data) {
   if (err) {
-      console.log('Something went wrong...');
-      console.dir(err);
-      return;
+    console.log('Something went wrong...');
+    console.dir(err);
+    return;
   }
   console.log(data)
 });
@@ -33,7 +33,7 @@ connection.connect((err) => {
 
 const firstQuestion = () => {
 
-  
+
   inquirer
     .prompt({
       name: 'AddViewUpdate',
@@ -70,9 +70,9 @@ const firstQuestion = () => {
         case "View all Roles":
           viewEmployees("employee_role");
           break;
-          
-          case "Done":
-            connection.end();
+
+        case "Done":
+          connection.end();
 
         default:
           break;
@@ -199,19 +199,70 @@ const firstQuestion = () => {
 
   const viewEmployees = (x) => {
     console.log(x)
-    connection.query(`SELECT * FROM ${x}`, 
+    connection.query(`SELECT * FROM ${x}`,
       (err, res) => {
         if (err) throw err;
         console.table(res);
-        firstQuestion();
+        // firstQuestion();
       }
     )
   }
 
-  const updateRole = () => {
-    connection.query('UPDATE employee_role SET ? WHERE ?') 
+  function updateRole() {
+    const updating = "SELECT id, first_name, last_name, role_id  FROM employee";
+    connection.query(updating, function (err, res) {
+      if (err) throw err;
+      console.table(res); // using table to show list of employee's
 
-  }
+      let allRoles = 'SELECT * FROM employee_role';
+      let roles = connection.query(allRoles, (err, data) => {
+        let roleChoices = [];
+
+        for (let i = 0; i < data.length; i++) {
+          roleChoices.push({
+            name: data[i].title,
+            value: data[i].id
+          })
+        }
+
+        inquirer.prompt([
+          {
+            type: "input",
+            message: "Select the employee by ID that you would like to update",
+            name: "employee",
+
+          },
+
+          {
+
+            type: "list",
+            message: "Select which role you'd like to update the employee to",
+            name: "newRole",
+           choices: roleChoices
+          }
+
+        ])
+          .then((answer) => {
+            connection.query(
+              'UPDATE employee SET role_id = ? WHERE id = ? ', // role_id is the employee were updating
+
+              [
+                answer.newRole,
+                answer.employee
+
+              ],
+
+              (err) => {
+                if (err) throw err;
+                console.log("You have successfully udpated a role")
+                // ask initial question again.
+                firstQuestion();
+              }
+            );
+          });
 
 
+      })
+    });
+  };
 }
