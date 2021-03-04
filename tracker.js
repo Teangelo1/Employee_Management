@@ -2,7 +2,7 @@ const mysql = require('mysql');
 const inquirer = require('inquirer');
 const consoleTable = require("console.table");
 const chalk = require('chalk');
-var figlet = require('figlet');
+let figlet = require('figlet');
 
 const connection = mysql.createConnection({
   host: 'localhost',
@@ -203,7 +203,7 @@ const firstQuestion = () => {
       (err, res) => {
         if (err) throw err;
         console.table(res);
-        // firstQuestion();
+        firstQuestion();
       }
     )
   }
